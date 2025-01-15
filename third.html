@@ -9,7 +9,7 @@
           font-family: Arial, sans-serif;
           text-align: center;
           background: black;
-          color: yellow;
+          color: #ffffff;
           height: 100vh;
           margin: 0;
           display: flex;
@@ -27,7 +27,7 @@
         .loading-bar {
             height: 100px;
             width: 100px;
-            background: linear-gradient(to right, lightgreen, darkgreen);
+            background: linear-gradient(to right, lightgreen, #38594e);
             transition: width 0.1s ease;
         }
         h1 {
@@ -59,7 +59,7 @@
         clearInterval(interval); // Stop the interval when progress reaches 100%
         setTimeout(() => {
           window.location.href = "fourth.html"; // Redirect to game page
-        }, 500); // Small delay before redirect
+        }, 100); // Small delay before redirect
       }
     }, 500); // Update every 500ms
     </script>    
