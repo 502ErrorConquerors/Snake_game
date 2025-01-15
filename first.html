@@ -6,27 +6,32 @@
     <title>Game</title>
     <style>
         body {
+/*position: absolute;*/
           font-family: Arial, sans-serif;
           text-align: center;
-          background: black;
-          color: yellow;
+            background: url("assets/first2.jpg") center;
+            color: #040202;
           height: 100vh;
           margin: 0;
           display: flex;
           justify-content: center;
           align-items: center;
         }
+
+        h1{
+           margin-bottom: 400px
+        }
     </style>
 </head>
 <body>
    <div>
     <h1>Loading...</h1>
-    <img src="assets/first.jpg" alt="loading">
+<!--    <img src="assets/first2.jpg" alt="loading">-->
    </div>
    <script>
          setTimeout(() => {
               window.location.href = "second.html";
-         }, 3000);
+         }, 2000);
    </script> 
 </body>
 </html>

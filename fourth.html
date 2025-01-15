@@ -6,21 +6,32 @@
   <title>Snake Game</title>
   <style>
     body {
+      /*position: fixed;*/
       margin: 0;
       padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-image: url('assets/Background.jpg');
       background-size: cover;
+      background-repeat: no-repeat;
+      background-image: url('assets/background5.png');
+      /*background-size:cover;*/
       background-position: center;
       height: 100vh;
+      width: 100vw;
     }
 
-    canvas {
+    #gameCanvas {
       display: block;
       background-color: rgba(0, 0, 0, 0.5);
-      border: 2px solid white;
+      border: 10px solid #474343;
+      width: 1010px;
+      height: 510px;
+      /*padding: 10px;*/
+      background-image: url('assets/background6.jpg') ;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
     }
 
     .overlay {
@@ -58,23 +69,34 @@
     }
 
     .overlay .restart {
-      background-color: #4caf50;
+      background-color: #00ff07;
       color: white;
     }
 
+
     .overlay .exit {
-      background-color: #f44336;
+      background-color: #ff0000;
       color: white;
     }
 
     .overlay .home {
-      background-color: #2196f3;
+      background-color: #03a3f6;
       color: white;
     }
+    .restart:hover{
+      background-color: #38594e;
+    }
+    .exit:hover{
+      background-color: #7c112f;
+    }
+    .home:hover{
+      background-color: #0256e8;
+    }
+
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas"></canvas>
+<canvas width="800" height="800" id="gameCanvas"></canvas>
 
   <!-- Game Over Popup -->
   <div id="gameOverOverlay" class="overlay">
@@ -95,6 +117,11 @@
 
 
   <script>
+    const foodSound = new Audio('music/food.mp3');
+    const gameOverSound = new Audio('music/gameOver.mp3');
+    const moveSound = new Audio('music/move.mp3');
+    const musicSound = new Audio('music/gaana.mp3');
+
     // Get canvas and context
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -121,7 +148,7 @@
 
       // Draw snake
       for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = i === 0 ? "lime" : "white"; // Head is lime, body is white
+        ctx.fillStyle = i === 0 ? "lime" : "skyblue"; // Head is lime, body is white
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
         ctx.strokeStyle = "black";
         ctx.strokeRect(snake[i].x, snake[i].y, box, box);
@@ -142,7 +169,7 @@
       }
 
       // Draw food
-      ctx.fillStyle = "red";
+      ctx.fillStyle = "darkred";
       ctx.fillRect(food.x, food.y, box, box);
 
       // Move the snake
@@ -156,6 +183,7 @@
 
       // Check if the snake eats food
       if (snakeX === food.x && snakeY === food.y) {
+        foodSound.play()
         score++;
         food = {
           x: Math.floor(Math.random() * (canvas.width / box)) * box,
@@ -182,20 +210,26 @@
         document.getElementById("finalScore").innerText = score;
         document.getElementById("bestScore").innerText = bestScore;
         document.getElementById("gameOverOverlay").classList.add("active");
+        gameOverSound.play()
+        musicSound.pause()
       }
     }
 
     // Collision detection with itself
-    
     function collision(head, body) {
       for (let i = 1; i < body.length; i++) {
-        if (head.x === body[i].x && head.y === body[i].y) return true;
+        if (head.x === body[i].x && head.y === body[i].y) {
+          gameOverSound.play()
+          musicSound.pause()
+          return true;
+        }
       }
       return false;
     }
 
     // Start game loop
     function startGame() {
+      musicSound.play();
       gameInterval = setInterval(drawGame, 100);
     }
 
@@ -203,6 +237,7 @@
     function pauseGame() {
       clearInterval(gameInterval);
       document.getElementById("pauseOverlay").classList.add("active");
+      musicSound.pause();
     }
 
     // Restart game
@@ -227,10 +262,19 @@
 
     // Event listeners
     document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-      if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
-      if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-      if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+      if (e.key === "ArrowUp" && direction !== "DOWN") {
+        moveSound.play()
+        direction = "UP";
+      }
+      if (e.key === "ArrowDown" && direction !== "UP") {
+        moveSound.play()
+        direction = "DOWN";}
+      if (e.key === "ArrowLeft" && direction !== "RIGHT"){
+        moveSound.play()
+        direction = "LEFT";}
+      if (e.key === "ArrowRight" && direction !== "LEFT") {
+        moveSound.play()
+        direction = "RIGHT";}
     });
 
     startGame(); // Start the game
