@@ -45,9 +45,23 @@ body{
     padding-left: 5vw;
     background-color:rgb(0, 149, 255);
 }
+#inp:hover {
+    background-color: darkblue;
+}
+#inp:focus {
+    background-color:rgb(0, 149, 255); 
+    color: white;
+    outline: none;
+}
+#inp::placeholder{
+    color: white;
+    font-size: 1.25rem;
+}
+
 button{
     cursor: pointer;
 }
+
 #start{
     width: 10vw;
     height: 10vh;
