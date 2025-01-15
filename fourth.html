@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: url('Background.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+    }
+
+    canvas {
+      display: block;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 2px solid white;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: Arial, sans-serif;
+      z-index: 10;
+    }
+
+    .overlay.active {
+      display: flex;
+    }
+
+    .overlay h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .overlay .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .overlay .restart {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .overlay .exit {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .overlay .home {
+      background-color: #2196f3;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- Game Over Popup -->
+  <div id="gameOverOverlay" class="overlay">
+    <h1>Game Over</h1>
+    <p>Your Score: <span id="finalScore"></span></p>
+    <p>Best Score: <span id="bestScore"></span></p>
+    <button class="btn home" onclick="goHome()">Home</button>
+    <button class="btn restart" onclick="restartGame()">Restart</button>
+    <button class="btn exit" onclick="exitGame()">Exit</button>
+  </div>
+
+  <!-- Pause Popup -->
+  <div id="pauseOverlay" class="overlay">
+    <h1>Do you want to leave the game?</h1>
+    <button class="yes" onclick="exitGame()">Exit</button>
+    <button class="no" onclick=" ">Resume</button>
+  </div>
+
+
+  <script>
+    // Get canvas and context
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Make canvas full-screen
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Snake game variables
+    const box = 30; // Size of each segment
+    let snake = [{ x: 9 * box, y: 10 * box }];
+    let direction = "RIGHT";
+    let food = {
+      x: Math.floor(Math.random() * (canvas.width / box)) * box,
+      y: Math.floor(Math.random() * (canvas.height / box)) * box,
+    };
+    let score = 0;
+    let bestScore = 0;
+    let gameInterval;
+
+    // Draw the snake game
+    function drawGame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw snake
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "lime" : "white"; // Head is lime, body is white
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+
+        // Draw face on the head
+        if (i === 0) {
+          ctx.fillStyle = "black";
+          ctx.beginPath();
+          ctx.arc(snake[i].x + 10, snake[i].y + 10, 4, 0, Math.PI * 2); // Left eye
+          ctx.arc(snake[i].x + 20, snake[i].y + 10, 4, 0, Math.PI * 2); // Right eye
+          ctx.fill();
+
+          ctx.strokeStyle = "black";
+          ctx.beginPath();
+          ctx.arc(snake[i].x + 15, snake[i].y + 20, 5, Math.PI, 2 * Math.PI); // Smile
+          ctx.stroke();
+        }
+      }
+
+      // Draw food
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, box, box);
+
+      // Move the snake
+      let snakeX = snake[0].x;
+      let snakeY = snake[0].y;
+
+      if (direction === "UP") snakeY -= box;
+      if (direction === "DOWN") snakeY += box;
+      if (direction === "LEFT") snakeX -= box;
+      if (direction === "RIGHT") snakeX += box;
+
+      // Check if the snake eats food
+      if (snakeX === food.x && snakeY === food.y) {
+        score++;
+        food = {
+          x: Math.floor(Math.random() * (canvas.width / box)) * box,
+          y: Math.floor(Math.random() * (canvas.height / box)) * box,
+        };
+      } else {
+        snake.pop(); // Remove last segment if no food is eaten
+      }
+
+      // Add new head to the snake
+      const newHead = { x: snakeX, y: snakeY };
+      snake.unshift(newHead);
+
+      // Check collision with walls or itself
+      if (
+        snakeX < 0 ||
+        snakeY < 0 ||
+        snakeX >= canvas.width ||
+        snakeY >= canvas.height ||
+        collision(newHead, snake)
+      ) {
+        clearInterval(gameInterval);
+        bestScore = Math.max(score, bestScore);
+        document.getElementById("finalScore").innerText = score;
+        document.getElementById("bestScore").innerText = bestScore;
+        document.getElementById("gameOverOverlay").classList.add("active");
+      }
+    }
+
+    // Collision detection with itself
+    
+    function collision(head, body) {
+      for (let i = 1; i < body.length; i++) {
+        if (head.x === body[i].x && head.y === body[i].y) return true;
+      }
+      return false;
+    }
+
+    // Start game loop
+    function startGame() {
+      gameInterval = setInterval(drawGame, 100);
+    }
+
+    // Pause the game
+    function pauseGame() {
+      clearInterval(gameInterval);
+      document.getElementById("pauseOverlay").classList.add("active");
+    }
+
+    // Restart game
+    function restartGame() {
+      document.getElementById("gameOverOverlay").classList.remove("active");
+      snake = [{ x: 9 * box, y: 10 * box }];
+      direction = "RIGHT";
+      score = 0;
+      startGame();
+    }
+    
+    // Go to home page
+    function goHome() {
+      window.location.href = "first.html";
+    }
+
+    // Exit game
+    function exitGame() {
+      alert("Thanks for playing!");
+      window.close(); // Close the tab
+    }
+
+    // Event listeners
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+      if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+      if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+      if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+    });
+
+    startGame(); // Start the game
+  </script>
+</body>
+</html>

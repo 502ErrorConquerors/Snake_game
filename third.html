@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          background: black;
+          color: yellow;
+          height: 100vh;
+          margin: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .loading-container {
+            width: 1000px;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #444;
+        }
+        .loading-bar {
+            height: 100px;
+            width: 100px;
+            background: linear-gradient(to right, lightgreen, darkgreen);
+            transition: width 0.1s ease;
+        }
+        h1 {
+          font-size: 24px;
+          margin: 20px 0;
+        }
+      </style>
+</head>
+
+<body>
+   <div class = "gameload">
+    <div class = "content2">
+        <h1 class = "heading">Game Loading...</h1>
+        <div class="loading-container">
+            <div class="loading-bar" id="loadingBar"></div>
+          </div>
+    </div>
+   </div>
+   <script>
+       const loadingBar = document.getElementById("loadingBar");
+    let progress = 0;
+
+    // Simulate the loader filling up
+    const interval = setInterval(() => {
+      progress += 10; // Increase progress by 10%
+      loadingBar.style.width = `${progress}%`; // Update the width of the bar
+
+      if (progress >= 100) {
+        clearInterval(interval); // Stop the interval when progress reaches 100%
+        setTimeout(() => {
+          window.location.href = "fourth.html"; // Redirect to game page
+        }, 500); // Small delay before redirect
+      }
+    }, 500); // Update every 500ms
+    </script>    
+</body>
+</html>

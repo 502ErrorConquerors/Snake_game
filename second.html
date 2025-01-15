@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <link rel = "stylesheet" href = "style2.css">
+</head>
+<body>
+    <div class = "container">
+        <div class = "frontpage">
+            <div class = "content1" >
+                <h1 class = "heading"><span style="color: red;">S</span><span style="color: blue;">N</span><span style="color: orangered;">A</span><span style="color: purple;">K</span><span style="color: yellowgreen;">E</span><br>    
+                    <span style="color: yellow;">G</span><span style="color: white;">A</span><span style="color: brown;">M</span><span style="color: pink;">E</span></h1>
+                <input id="inp" type="text" id="name" placeholder="Enter your name"><br>
+                <button id = "start" onclick="goToNextPage()">Start Game</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function goToNextPage(){
+            var name = document.getElementById("inp").value;
+            if(name == ""){
+                alert("Please enter your name");
+            }
+            else{
+                window.location.href = "third.html";
+            }
+        }
+    </script>
+
+</body>
+</html>
+
